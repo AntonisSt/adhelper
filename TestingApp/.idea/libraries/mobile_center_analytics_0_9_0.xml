@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="mobile-center-analytics-0.9.0">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.android/build-cache/28f2723d1fee7604a9ae4d958c0d7b16fb749e68/output/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.android/build-cache/28f2723d1fee7604a9ae4d958c0d7b16fb749e68/output/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.microsoft.azure.mobile/mobile-center-analytics/0.9.0/1d01d758b6c09439d6333a815dfc0e40201ef736/mobile-center-analytics-0.9.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

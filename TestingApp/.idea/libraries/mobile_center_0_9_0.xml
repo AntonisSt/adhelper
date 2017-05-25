@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="mobile-center-0.9.0">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.android/build-cache/9f4086459fc2621b7b96f43e1aeb67b453f322ed/output/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.android/build-cache/9f4086459fc2621b7b96f43e1aeb67b453f322ed/output/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.microsoft.azure.mobile/mobile-center/0.9.0/5dca33c86758b5b5754532c0b032d5de10b5d637/mobile-center-0.9.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

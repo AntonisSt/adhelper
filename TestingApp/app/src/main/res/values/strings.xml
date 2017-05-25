@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">TestingApp</string>
+    <string name="drawer_football_title">Ποδόσφαιρο</string>
+    <string name="home">Αρχική</string>
+    <string name="first_division">A\' Κατηγορία</string>
+    <string name="second_division">B\' Κατηγορία</string>
+    <string name="third_division">Γ\' Κατηγορία &amp; Αγροτικό</string>
+    <string name="greece">Ελλάδα</string>
+    <string name="international">Διεθνή</string>
+    <string name="under">Παιδικά πρωταθλήματα</string>
+    <string name="others">Διάφορα</string>
+    <string name="other_sports">Άλλα σπορ</string>
+    <string name="hot_break">Hot διάλλειμα</string>
+    <string name="gossip">Κους κους</string>
+    <string name="lifestyle">Lifestyle</string>
+    <string name="car">Αυτοκίνητο</string>
+    <string name="weird">Παράξενα</string>
+    <string name="sports_one_tv">Sports1-TV</string>
+    <string name="program">Πρόγραμμα</string>
+</resources>

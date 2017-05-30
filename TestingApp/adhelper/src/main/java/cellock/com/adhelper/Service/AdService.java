@@ -63,19 +63,19 @@ public class AdService {
     }
 
     public void RawApiCall() {
-                RawInputModel model =  new RawInputModel();
+        RawInputModel model =  new RawInputModel();
 
-                model.setUdId(inputModel.getUdId());
-                model.setUaKey(inputModel.getUaKey());
-                model.setEvent(1 + "");
-                Stream stream = new Stream();
+        model.setUdId(inputModel.getUdId());
+        model.setUaKey(inputModel.getUaKey());
+        model.setEvent(1 + "");
+        Stream stream = new Stream();
 
-                stream.setUserAgent("");
-                stream.setChannel("android sdk");
-                stream.setHeight(inputModel.getHeight() + "");
-                stream.setWidth(inputModel.getWidth() + "");
-                model.setStream(stream);
-                new LocationManager(model, retrofitClient, activity);
+        stream.setUserAgent("");
+        stream.setChannel("android sdk");
+        stream.setHeight(inputModel.getHeight() + "");
+        stream.setWidth(inputModel.getWidth() + "");
+        model.setStream(stream);
+        new LocationManager(model, retrofitClient, activity,  ((BannerOutput)outputModel).getText());
     }
 
 

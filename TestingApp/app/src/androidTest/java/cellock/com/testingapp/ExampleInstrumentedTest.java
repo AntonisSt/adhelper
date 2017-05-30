@@ -1,4 +1,4 @@
-package cellock.com.testingapp;
+package com.cellock.testingapp;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("cellock.com.testingapp", appContext.getPackageName());
+        assertEquals("com.cellock.testingapp", appContext.getPackageName());
     }
 }

@@ -1,4 +1,4 @@
-package cellock.com.testingapp.Adapters;
+package com.cellock.testingapp.Adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -7,9 +7,9 @@ import android.view.ViewGroup;
 
 import java.util.List;
 
-import cellock.com.testingapp.Models.SportsNew;
-import cellock.com.testingapp.R;
-import cellock.com.testingapp.ViewHolders.NewsViewHolder;
+import com.cellock.testingapp.Models.SportsNew;
+import com.cellock.testingapp.R;
+import com.cellock.testingapp.ViewHolders.NewsViewHolder;
 
 /**
  * Created by AntonisS on 4/3/2017.

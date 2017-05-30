@@ -9,6 +9,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.LocationRequest;
@@ -45,11 +46,13 @@ public class LocationManager {
     private Retrofit retroClient;
     private RawInputModel model;
     private Context context;
+    private TextView text;
 
-    public LocationManager(RawInputModel model, Retrofit retroClient, Context context) {
+    public LocationManager(RawInputModel model, Retrofit retroClient, Context context, TextView text) {
         this.model = model;
         this.retroClient = retroClient;
         this.context = context;
+        this.text = text;
         createLocationRequest();
     }
 
@@ -104,11 +107,18 @@ public class LocationManager {
                             }
 
                             @Override
-                            public void onNext(RawOutputModel output) {
+                            public void onNext(final RawOutputModel output) {
                                 ((Activity)context).runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
                                         Toast.makeText(context, "Raw service completed successfully", Toast.LENGTH_SHORT).show();
+                                        text.setText(text.getText() + "\n"
+                                                +"raw callback \n"
+                                                + "status: " + output.getStatus() + "\n"
+                                                + "event: " + output.getList().get(0).getEvent() + "\n"
+                                                + "stream: " + output.getList().get(0).getStream() + "\n"
+                                                + "uakey: " + output.getList().get(0).getUaKey() + "\n"
+                                                + "udid: " + output.getList().get(0).getUdId() + "\n");
                                     }
                                 });
                             }

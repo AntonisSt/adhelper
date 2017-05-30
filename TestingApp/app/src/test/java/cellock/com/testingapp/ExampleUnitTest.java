@@ -1,4 +1,4 @@
-package cellock.com.testingapp;
+package com.cellock.testingapp;
 
 import org.junit.Test;
 

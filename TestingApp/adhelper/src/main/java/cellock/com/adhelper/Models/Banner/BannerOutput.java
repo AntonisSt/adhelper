@@ -47,4 +47,8 @@ public class BannerOutput extends AdOutput {
         text.setText(builder.toString());
     }
 
+    public TextView getText() {
+        return text;
+    }
+
 }

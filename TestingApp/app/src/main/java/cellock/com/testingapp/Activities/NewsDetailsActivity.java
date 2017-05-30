@@ -1,4 +1,4 @@
-package cellock.com.testingapp.Activities;
+package com.cellock.testingapp.Activities;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -19,8 +19,8 @@ import java.net.ConnectException;
 import java.net.UnknownHostException;
 
 import cellock.com.adhelper.Service.AdService;
-import cellock.com.testingapp.Models.SportsResponse;
-import cellock.com.testingapp.R;
+import com.cellock.testingapp.Models.SportsResponse;
+import com.cellock.testingapp.R;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;

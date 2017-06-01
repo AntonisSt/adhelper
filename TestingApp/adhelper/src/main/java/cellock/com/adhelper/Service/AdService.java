@@ -22,6 +22,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -82,29 +83,30 @@ public class AdService {
     private void AdApiCall() {
         try {
             ApiInterface service = retrofitClient.create(ApiInterface.class);
-            final Observable<AdOutput> output = service.postAdService(inputModel);
+            final Observable<Response<AdOutput>> output = service.postAdService(inputModel);
 
             output.subscribeOn(Schedulers.newThread())
                     .timeout(10, TimeUnit.SECONDS)
                     .observeOn(Schedulers.newThread())
-                    .subscribe(new Observer<AdOutput>() {
+                    .subscribe(new Observer<Response<AdOutput>>() {
                         @Override
                         public void onSubscribe(Disposable d) {
                             d.isDisposed();
                         }
 
                         @Override
-                        public void onNext(AdOutput adOutput) {
-                            outputModel.setContentUrl(adOutput.getContentUrl());
+                        public void onNext(final Response<AdOutput> adOutput) {
+                            outputModel.setContentUrl(adOutput.body().getContentUrl());
                             activity.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     Toast.makeText(activity, "Ad service completed successfully", Toast.LENGTH_SHORT).show();
+                                    ((BannerOutput)outputModel).getText().setText(adOutput.raw().request().url().toString() + "\n" + adOutput.toString());
                                     outputModel.setResult();
                                 }
                             });
-                            inputModel.setAdKey(adOutput.getAdKey());
-                            inputModel.setCamKey(adOutput.getCamKey());
+                            inputModel.setAdKey(adOutput.body().getAdKey());
+                            inputModel.setCamKey(adOutput.body().getCamKey());
                             RawApiCall();
                         }
 

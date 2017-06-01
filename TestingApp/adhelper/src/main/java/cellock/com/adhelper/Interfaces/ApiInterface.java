@@ -6,6 +6,7 @@ import cellock.com.adhelper.Models.SuperClasses.AdInput;
 import cellock.com.adhelper.Models.SuperClasses.AdOutput;
 import io.reactivex.Observable;
 import okhttp3.RequestBody;
+import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
@@ -19,7 +20,7 @@ import retrofit2.http.POST;
 public interface ApiInterface {
     @Headers("Content-Type: application/json")
     @POST("adv")
-    Observable<AdOutput> postAdService(@Body AdInput input);
+    Observable<Response<AdOutput>> postAdService(@Body AdInput input);
 
     @Headers({
         "Content-Type: application/json",
@@ -27,5 +28,5 @@ public interface ApiInterface {
         "ads-api-key: 16CDF36F65767"})
 
     @POST("raw")
-    Observable<RawOutputModel> postRawService(@Body RequestBody input);
+    Observable<Response<RawOutputModel>> postRawService(@Body RequestBody input);
 }

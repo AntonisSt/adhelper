@@ -44,7 +44,7 @@ public class BannerOutput extends AdOutput {
         builder.append("iconUrl: " + iconUrl + "\n");
         builder.append("camKey: " + camKey + "\n");
         builder.append("adKey: " + adKey + "\n");
-        text.setText(builder.toString());
+        text.setText(text.getText() + "\n" + builder.toString());
     }
 
     public TextView getText() {

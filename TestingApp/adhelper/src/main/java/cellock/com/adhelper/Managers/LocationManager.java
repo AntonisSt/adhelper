@@ -96,29 +96,31 @@ public class LocationManager {
                 object.addProperty("stream", stream.toString());
                 object.addProperty("event", model.getEvent());
 
-                final Observable<RawOutputModel> output = service.postRawService(RequestBody.create(mediaType, object.toString()));
+                final Observable<retrofit2.Response<RawOutputModel>> output = service.postRawService(RequestBody.create(mediaType, object.toString()));
 
                 output.subscribeOn(Schedulers.newThread())
                         .observeOn(Schedulers.newThread())
-                        .subscribe(new Observer<RawOutputModel>() {
+                        .subscribe(new Observer<retrofit2.Response<RawOutputModel>>() {
                             @Override
                             public void onSubscribe(Disposable d) {
                                 d.isDisposed();
                             }
 
                             @Override
-                            public void onNext(final RawOutputModel output) {
+                            public void onNext(final retrofit2.Response<RawOutputModel> output) {
                                 ((Activity)context).runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
                                         Toast.makeText(context, "Raw service completed successfully", Toast.LENGTH_SHORT).show();
                                         text.setText(text.getText() + "\n"
                                                 +"raw callback \n"
-                                                + "status: " + output.getStatus() + "\n"
-                                                + "event: " + output.getList().get(0).getEvent() + "\n"
-                                                + "stream: " + output.getList().get(0).getStream() + "\n"
-                                                + "uakey: " + output.getList().get(0).getUaKey() + "\n"
-                                                + "udid: " + output.getList().get(0).getUdId() + "\n");
+                                                + "callback: " + output.toString()+ "\n"
+                                                + "url: " +  output.raw().request().url().toString() + "\n"
+                                                + "status: " + output.body().getStatus() + "\n"
+                                                + "event: " + output.body().getList().get(0).getEvent() + "\n"
+                                                + "stream: " + output.body().getList().get(0).getStream() + "\n"
+                                                + "uakey: " + output.body().getList().get(0).getUaKey() + "\n"
+                                                + "udid: " + output.body().getList().get(0).getUdId() + "\n");
                                     }
                                 });
                             }

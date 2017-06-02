@@ -6,6 +6,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
 import java.util.concurrent.TimeUnit;
 
 import cellock.com.adhelper.Managers.LocationManager;
@@ -82,7 +84,11 @@ public class AdService {
 
     private void AdApiCall() {
         try {
-            ApiInterface service = retrofitClient.create(ApiInterface.class);
+            final ApiInterface service = retrofitClient.create(ApiInterface.class);
+
+            Gson gson = new Gson();
+            final String body = gson.toJson(inputModel);
+
             final Observable<Response<AdOutput>> output = service.postAdService(inputModel);
 
             output.subscribeOn(Schedulers.newThread())
@@ -101,7 +107,12 @@ public class AdService {
                                 @Override
                                 public void run() {
                                     Toast.makeText(activity, "Ad service completed successfully", Toast.LENGTH_SHORT).show();
-                                    ((BannerOutput)outputModel).getText().setText(adOutput.raw().request().url().toString() + "\n" + adOutput.toString());
+                                    ((BannerOutput)outputModel).getText().setText(
+                                            "callback: " + adOutput.toString()+ "\n"
+                                            + "message: " + adOutput.message() + "\n"
+                                            + "headers request:" + adOutput.raw().request().headers().toString() + "\n"
+                                            + "body: " + body + "\n"
+                                            + "url: " +  adOutput.raw().request().url().toString() + "\n");
                                     outputModel.setResult();
                                 }
                             });

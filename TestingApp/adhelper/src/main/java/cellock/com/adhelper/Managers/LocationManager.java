@@ -90,13 +90,15 @@ public class LocationManager {
                 stream.addProperty("width", model.getStream().getWidth());
                 stream.addProperty("height", model.getStream().getHeight());
 
-                JsonObject object = new JsonObject();
+                final JsonObject object = new JsonObject();
                 object.addProperty("udid", model.getUdId());
                 object.addProperty("uakey", model.getUaKey());
                 object.addProperty("stream", stream.toString());
                 object.addProperty("event", model.getEvent());
 
-                final Observable<retrofit2.Response<RawOutputModel>> output = service.postRawService(RequestBody.create(mediaType, object.toString()));
+                final RequestBody body = RequestBody.create(mediaType, object.toString());
+
+                final Observable<retrofit2.Response<RawOutputModel>> output = service.postRawService(body);
 
                 output.subscribeOn(Schedulers.newThread())
                         .observeOn(Schedulers.newThread())
@@ -115,6 +117,10 @@ public class LocationManager {
                                         text.setText(text.getText() + "\n"
                                                 +"raw callback \n"
                                                 + "callback: " + output.toString()+ "\n"
+                                                + "message: " + output.message() + "\n"
+                                                + "headers request:" + output.raw().request().headers().toString() + "\n"
+                                                + "request media type: " + body.contentType().toString() + "\n"
+                                                + "request body: " + object.toString() + "\n"
                                                 + "url: " +  output.raw().request().url().toString() + "\n"
                                                 + "status: " + output.body().getStatus() + "\n"
                                                 + "event: " + output.body().getList().get(0).getEvent() + "\n"

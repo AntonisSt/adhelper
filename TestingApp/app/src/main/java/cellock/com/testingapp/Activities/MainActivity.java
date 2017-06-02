@@ -109,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
 
+
             ApiInterface service = retrofitClient.create(ApiInterface.class);
             Observable<SportsResponse> output = service.getHomeNews();
             output.subscribeOn(Schedulers.newThread())

@@ -1,6 +1,6 @@
-package com.cellock.testingapp.Interfaces;
+package cellock.com.testingapp.Interfaces;
 
-import com.cellock.testingapp.Models.SportsResponse;
+import cellock.com.testingapp.Models.SportsResponse;
 import io.reactivex.Observable;
 import retrofit2.http.GET;
 import retrofit2.http.Query;

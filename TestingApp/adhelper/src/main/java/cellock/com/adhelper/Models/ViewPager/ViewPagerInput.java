@@ -17,7 +17,6 @@ public class ViewPagerInput extends AdInput {
     public ViewPagerInput(Activity activity){
         super(activity);
         uaKey = "E42B5AEF-5D0A-432C-9535-4BB050BFEA44";
-        adType = "Slider";
     }
 }
 

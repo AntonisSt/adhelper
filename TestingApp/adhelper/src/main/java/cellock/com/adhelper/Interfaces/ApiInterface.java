@@ -18,13 +18,15 @@ import retrofit2.http.POST;
  */
 
 public interface ApiInterface {
-    @Headers("Content-Type: application/json")
+    @Headers({
+            "Content-Type: application/json",
+            "ads-api-key: 16CDF36F65767"
+    })
     @POST("adv")
     Observable<Response<AdOutput>> postAdService(@Body AdInput input);
 
     @Headers({
         "Content-Type: application/json",
-        "cache-control: no-cache",
         "ads-api-key: 16CDF36F65767"})
 
     @POST("raw")

@@ -1,6 +1,7 @@
 package cellock.com.adhelper.Service;
 
 import android.app.Activity;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -40,17 +41,15 @@ public class AdService {
     private Retrofit retrofitClient;
     private Activity activity;
 
-    public AdService(Activity activity, String uaKey,ImageView image, TextView text){
+    public AdService(Activity activity, String uaKey, ImageView image)
+    {
         this.activity = activity;
         inputModel = new BannerInput(activity);
         inputModel.setUaKey(uaKey);
-        outputModel = new BannerOutput(image, text);
+        outputModel = new BannerOutput(image);
 
-        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
         OkHttpClient.Builder client = new OkHttpClient.Builder();
-        client.addInterceptor(interceptor);
 
         retrofitClient = new Retrofit.Builder()
                 .baseUrl(inputModel.getBaseUrl())
@@ -68,17 +67,20 @@ public class AdService {
     public void RawApiCall() {
         RawInputModel model =  new RawInputModel();
 
+        DisplayMetrics metrics = new DisplayMetrics();
+        activity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+
         model.setUdId(inputModel.getUdId());
         model.setUaKey(inputModel.getUaKey());
-        model.setEvent(1 + "");
+        model.setEvent(0 + "");
         Stream stream = new Stream();
 
         stream.setUserAgent("");
         stream.setChannel("android sdk");
-        stream.setHeight(inputModel.getHeight() + "");
-        stream.setWidth(inputModel.getWidth() + "");
+        stream.setHeight(metrics.heightPixels + "");
+        stream.setWidth(metrics.widthPixels + "");
         model.setStream(stream);
-        new LocationManager(model, retrofitClient, activity,  ((BannerOutput)outputModel).getText());
+        new LocationManager(model, retrofitClient, activity);
     }
 
 
@@ -103,16 +105,11 @@ public class AdService {
                         @Override
                         public void onNext(final Response<AdOutput> adOutput) {
                             outputModel.setContentUrl(adOutput.body().getContentUrl());
+                            outputModel.setLinkUrl(adOutput.body().getLinkUrl());
                             activity.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     Toast.makeText(activity, "Ad service completed successfully", Toast.LENGTH_SHORT).show();
-                                    ((BannerOutput)outputModel).getText().setText(
-                                            "callback: " + adOutput.toString()+ "\n"
-                                            + "message: " + adOutput.message() + "\n"
-                                            + "headers request:" + adOutput.raw().request().headers().toString() + "\n"
-                                            + "body: " + body + "\n"
-                                            + "url: " +  adOutput.raw().request().url().toString() + "\n");
                                     outputModel.setResult();
                                 }
                             });

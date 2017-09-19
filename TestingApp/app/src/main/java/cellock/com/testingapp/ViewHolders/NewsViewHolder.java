@@ -1,4 +1,4 @@
-package com.cellock.testingapp.ViewHolders;
+package cellock.com.testingapp.ViewHolders;
 
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
@@ -10,9 +10,10 @@ import com.bumptech.glide.Glide;
 
 import java.util.List;
 
-import com.cellock.testingapp.Activities.NewsDetailsActivity;
-import com.cellock.testingapp.Models.SportsNew;
-import com.cellock.testingapp.R;
+import cellock.com.testingapp.R;
+
+import cellock.com.testingapp.Activities.NewsDetailsActivity;
+import cellock.com.testingapp.Models.SportsNew;
 
 /**
  * Created by AntonisS on 4/3/2017.

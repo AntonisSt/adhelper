@@ -1,31 +1,21 @@
-package com.cellock.testingapp.Activities;
+package cellock.com.testingapp.Activities;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v4.view.GravityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
-import java.net.ConnectException;
-import java.net.UnknownHostException;
 
 import cellock.com.adhelper.Service.AdService;
-import com.cellock.testingapp.Models.SportsResponse;
-import com.cellock.testingapp.R;
-import io.reactivex.Observable;
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
+
+
+import cellock.com.testingapp.R;
 
 /**
  * Created by AntonisS on 4/3/2017.
@@ -34,7 +24,7 @@ import io.reactivex.schedulers.Schedulers;
 public class NewsDetailsActivity extends AppCompatActivity  {
 
     private ImageView image, ad;
-    private TextView title, description, output;
+    private TextView title, description;
     private AdService service;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +63,7 @@ public class NewsDetailsActivity extends AppCompatActivity  {
         else if(requestCode == 100)
             if(resultCode == RESULT_OK) {
                 service = null;
-                service = new AdService(NewsDetailsActivity.this, "8C225462-6E4A-4EC3-A9E2-CDACF757326A", ad, output);
+                service = new AdService(NewsDetailsActivity.this, "8C225462-6E4A-4EC3-A9E2-CDACF757326A", ad);
                 service.getAdService();
             }
         super.onActivityResult(requestCode, resultCode, data);
@@ -84,7 +74,6 @@ public class NewsDetailsActivity extends AppCompatActivity  {
         title = (TextView) findViewById(R.id.tv_new);
         description = (TextView) findViewById(R.id.tv_description);
         ad = (ImageView) findViewById(R.id.iv_ad);
-        output = (TextView) findViewById(R.id.tv_output);
     }
 
     private void setValues() {
@@ -98,12 +87,11 @@ public class NewsDetailsActivity extends AppCompatActivity  {
                     .fitCenter()
                     .into(image);
 
-
             Thread thread = new Thread(new Runnable() {
                 @Override
                 public void run() {
                     try {
-                        service = new AdService(NewsDetailsActivity.this, "8C225462-6E4A-4EC3-A9E2-CDACF757326A", ad, output);
+                        service = new AdService(NewsDetailsActivity.this, "8C225462-6E4A-4EC3-A9E2-CDACF757326A", ad);
                         service.getAdService();
                     } catch(SecurityException e) {
 

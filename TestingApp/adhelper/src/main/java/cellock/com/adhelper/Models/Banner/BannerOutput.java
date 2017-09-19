@@ -1,8 +1,12 @@
 package cellock.com.adhelper.Models.Banner;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
@@ -16,10 +20,8 @@ import cellock.com.adhelper.R;
 public class BannerOutput extends AdOutput {
 
     private ImageView image;
-    private TextView text;
 
-    public BannerOutput(ImageView image, TextView text) {
-        this.text = text;
+    public BannerOutput(ImageView image) {
         this.image = image;
     }
 
@@ -33,22 +35,17 @@ public class BannerOutput extends AdOutput {
                 .fitCenter()
                 .into(image);
 
-        StringBuilder builder = new StringBuilder();
-        builder.append("status: " + status + "\n");
-        builder.append("date: " + date + "\n");
-        builder.append("contentUrl: " + contentUrl + "\n");
-        builder.append("contentType: " + contentType + "\n");
-        builder.append("width: " + width + "\n");
-        builder.append("height: " + height + "\n");
-        builder.append("linkUrl: " + linkUrl + "\n");
-        builder.append("iconUrl: " + iconUrl + "\n");
-        builder.append("camKey: " + camKey + "\n");
-        builder.append("adKey: " + adKey + "\n");
-        text.setText(text.getText() + "\n" + builder.toString());
+        image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(linkUrl == null)
+                    return;
+
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(linkUrl));
+                v.getContext().startActivity(browserIntent);
+            }
+        });
     }
 
-    public TextView getText() {
-        return text;
-    }
 
 }

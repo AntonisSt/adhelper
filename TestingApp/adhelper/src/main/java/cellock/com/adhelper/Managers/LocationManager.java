@@ -3,6 +3,7 @@ package cellock.com.adhelper.Managers;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.support.v4.app.ActivityCompat;
@@ -14,9 +15,13 @@ import android.widget.Toast;
 
 import com.google.android.gms.location.LocationRequest;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.patloew.rxlocation.FusedLocation;
 import com.patloew.rxlocation.RxLocation;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import cellock.com.adhelper.Interfaces.ApiInterface;
 import cellock.com.adhelper.Models.RawModel.RawInputModel;
@@ -46,23 +51,16 @@ public class LocationManager {
     private Retrofit retroClient;
     private RawInputModel model;
     private Context context;
-    private TextView text;
 
-    public LocationManager(RawInputModel model, Retrofit retroClient, Context context, TextView text) {
+    public LocationManager(RawInputModel model, Retrofit retroClient, Context context) {
         this.model = model;
         this.retroClient = retroClient;
         this.context = context;
-        this.text = text;
+
         createLocationRequest();
     }
 
     private void createLocationRequest() {
-
-        LocationRequest mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(60000);
-        mLocationRequest.setFastestInterval(60000);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_LOW_POWER);
-
         RxLocation rxLocation = new RxLocation(context);
 
         if ( ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
@@ -81,12 +79,25 @@ public class LocationManager {
             try {
                 ApiInterface service = retroClient.create(ApiInterface.class);
 
+                final PackageManager pm = context.getPackageManager();
+                List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
+
+                Gson gson = new Gson();
+                List<JsonObject> packageNames = new ArrayList<JsonObject>();
+                for(int i = 0; i < 10; i++) {
+                    JsonObject json = new JsonObject();
+                    json.addProperty("app", packages.get(i).packageName);
+                    packageNames.add(json);
+                }
+
+                String apps = gson.toJson(packageNames);
 
                 MediaType mediaType = MediaType.parse("application/json");
 
                 JsonObject stream = new JsonObject();
                 stream.addProperty("useragent", model.getStream().getUserAgent());
                 stream.addProperty("channel", model.getStream().getChannel());
+                //stream.addProperty("apps", apps);
                 stream.addProperty("width", model.getStream().getWidth());
                 stream.addProperty("height", model.getStream().getHeight());
 
@@ -113,20 +124,7 @@ public class LocationManager {
                                 ((Activity)context).runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        Toast.makeText(context, "Raw service completed successfully", Toast.LENGTH_SHORT).show();
-                                        text.setText(text.getText() + "\n"
-                                                +"raw callback \n"
-                                                + "callback: " + output.toString()+ "\n"
-                                                + "message: " + output.message() + "\n"
-                                                + "headers request:" + output.raw().request().headers().toString() + "\n"
-                                                + "request media type: " + body.contentType().toString() + "\n"
-                                                + "request body: " + object.toString() + "\n"
-                                                + "url: " +  output.raw().request().url().toString() + "\n"
-                                                + "status: " + output.body().getStatus() + "\n"
-                                                + "event: " + output.body().getList().get(0).getEvent() + "\n"
-                                                + "stream: " + output.body().getList().get(0).getStream() + "\n"
-                                                + "uakey: " + output.body().getList().get(0).getUaKey() + "\n"
-                                                + "udid: " + output.body().getList().get(0).getUdId() + "\n");
+                                        Toast.makeText(context, "Raw service completed successfully.", Toast.LENGTH_SHORT).show();
                                     }
                                 });
                             }

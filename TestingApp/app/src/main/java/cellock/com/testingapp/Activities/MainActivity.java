@@ -1,4 +1,4 @@
-package com.cellock.testingapp.Activities;
+package cellock.com.testingapp.Activities;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -27,14 +27,16 @@ import java.net.ConnectException;
 import java.net.UnknownHostException;
 import java.util.List;
 
-import com.cellock.testingapp.Adapters.NewsAdapter;
-import com.cellock.testingapp.Interfaces.ApiInterface;
-import com.cellock.testingapp.Models.SportsNew;
-import com.cellock.testingapp.Models.SportsResponse;
-import com.cellock.testingapp.R;
+import cellock.com.testingapp.R;
+
+import cellock.com.testingapp.Adapters.NewsAdapter;
+import cellock.com.testingapp.Interfaces.ApiInterface;
+import cellock.com.testingapp.Models.SportsNew;
+import cellock.com.testingapp.Models.SportsResponse;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
@@ -51,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     private List<SportsNew> news;
     private NewsAdapter adapter;
     private CoordinatorLayout coordinatorLayout;
+    private CompositeDisposable disposable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +72,8 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
+        disposable = new CompositeDisposable();
+
         setTitle(R.string.home);
         initViews();
         setClickListeners();
@@ -82,6 +87,12 @@ public class MainActivity extends AppCompatActivity {
                 drawerLayout.openDrawer(GravityCompat.START);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        disposable.clear();
+        super.onDestroy();
     }
 
     @Override
@@ -117,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
                     .subscribe(new Observer<SportsResponse>() {
                         @Override
                         public void onSubscribe(Disposable d) {
-                            d.isDisposed();
+                            disposable.add(d);
                         }
 
                         @Override
@@ -154,6 +165,8 @@ public class MainActivity extends AppCompatActivity {
 
                         }
                     });
+
+
         } catch(Exception e) {
             e.printStackTrace();
         }

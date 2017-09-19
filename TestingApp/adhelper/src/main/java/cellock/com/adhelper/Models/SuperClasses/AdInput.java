@@ -17,7 +17,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class AdInput {
 
-    protected static final String baseUrl = "http://cellockdomain.cloudapp.net/";
+    protected static final String baseUrl = "https://api.motus.aero/";
     @SerializedName("camkey")
     @Expose
     protected int camKey;
@@ -30,29 +30,13 @@ public class AdInput {
     @SerializedName("uakey")
     @Expose
     protected String uaKey;
-    @SerializedName("adtype")
+    @SerializedName("isClicked")
     @Expose
-    protected String adType;
-    @SerializedName("devicetype")
-    @Expose
-    protected final String deviceType = "androidsdk";
-    @SerializedName("linkurl")
-    @Expose
-    protected String linkUrl;
-    @SerializedName("width")
-    @Expose
-    protected int width;
-    @SerializedName("height")
-    @Expose
-    protected int height;
+    protected String isClicked;
 
     public AdInput(Activity activity) {
         TelephonyManager tm = (TelephonyManager) activity.getSystemService(Context.TELEPHONY_SERVICE);
-        DisplayMetrics metrics = new DisplayMetrics();
-        activity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        width = metrics.widthPixels;
-        height = metrics.heightPixels;
-
+        isClicked = "false";
         try {
             udId = tm.getDeviceId();
         }
@@ -78,10 +62,7 @@ public class AdInput {
     public String getBaseUrl() {
         return baseUrl;
     }
-    public int getWidth() {
-        return width;
-    }
-    public int getHeight() {
-        return height;
+    public String getIsClicked() {
+        return isClicked;
     }
 }

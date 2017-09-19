@@ -14,8 +14,7 @@ public class VideoInput extends AdInput {
     public VideoInput(Activity activity){
         super(activity);
         uaKey = "59A10E4D-5968-44FC-8C46-AB9408C76E81";
-        adType = "Video";
-    }
+}
 
 }
 

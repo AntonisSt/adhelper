@@ -12,7 +12,6 @@ public class BannerInput extends AdInput {
 
     public BannerInput(Activity context){
         super(context);
-        adType = "Banner";
     }
 
 }

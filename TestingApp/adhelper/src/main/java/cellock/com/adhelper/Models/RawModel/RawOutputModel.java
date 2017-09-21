@@ -9,25 +9,59 @@ import java.util.List;
  */
 
 public class RawOutputModel {
-    @SerializedName("status")
-    protected String status;
 
-    @SerializedName("result")
-    protected List<RawInputTemp> list;
+    @SerializedName("email")
+    protected String email;
 
-    public void setList(List<RawInputTemp> list) {
-        this.list = list;
+    @SerializedName("gender")
+    protected String gender;
+
+    @SerializedName("Nationality")
+    protected String nationality;
+
+    @SerializedName("DateOfBirth")
+    protected String dateOfBirth;
+
+    @SerializedName("udid")
+    protected String udid;
+
+    public String getEmail() {
+        return email;
     }
 
-    public List<RawInputTemp> getList() {
-        return list;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public String getGender() {
+        return gender;
     }
 
-    public String getStatus() {
-        return status;
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getNationality() {
+        return nationality;
+    }
+
+    public void setNationality(String nationality) {
+        this.nationality = nationality;
+    }
+
+    public String getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(String dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public String getUdid() {
+        return udid;
+    }
+
+    public void setUdid(String udid) {
+        this.udid = udid;
     }
 }

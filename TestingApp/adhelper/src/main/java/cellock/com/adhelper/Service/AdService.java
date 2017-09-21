@@ -4,9 +4,12 @@ import android.app.Activity;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
+import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.gson.Gson;
 
 import java.util.concurrent.TimeUnit;
@@ -19,6 +22,7 @@ import cellock.com.adhelper.Models.SuperClasses.AdOutput;
 import cellock.com.adhelper.Interfaces.ApiInterface;
 import cellock.com.adhelper.Models.Banner.BannerInput;
 import cellock.com.adhelper.Models.Banner.BannerOutput;
+import cellock.com.adhelper.Models.Video.VideoOutput;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
@@ -59,6 +63,23 @@ public class AdService {
                 .build();
     }
 
+    public AdService(Activity activity, String uaKey, RelativeLayout videoParent)
+    {
+        this.activity = activity;
+        inputModel = new BannerInput(activity);
+        inputModel.setUaKey(uaKey);
+        outputModel = new VideoOutput(videoParent);
+
+
+        OkHttpClient.Builder client = new OkHttpClient.Builder();
+
+        retrofitClient = new Retrofit.Builder()
+                .baseUrl(inputModel.getBaseUrl())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client.build())
+                .build();
+    }
 
     public void getAdService() {
         AdApiCall();
@@ -72,7 +93,7 @@ public class AdService {
 
         model.setUdId(inputModel.getUdId());
         model.setUaKey(inputModel.getUaKey());
-        model.setEvent(0 + "");
+        model.setEvent(1 + "");
         Stream stream = new Stream();
 
         stream.setUserAgent("");
@@ -87,9 +108,6 @@ public class AdService {
     private void AdApiCall() {
         try {
             final ApiInterface service = retrofitClient.create(ApiInterface.class);
-
-            Gson gson = new Gson();
-            final String body = gson.toJson(inputModel);
 
             final Observable<Response<AdOutput>> output = service.postAdService(inputModel);
 

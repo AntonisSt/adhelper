@@ -10,6 +10,7 @@ import com.bumptech.glide.Glide;
 
 import java.util.List;
 
+import cellock.com.testingapp.Activities.VideoNewsDetailsActivity;
 import cellock.com.testingapp.R;
 
 import cellock.com.testingapp.Activities.NewsDetailsActivity;
@@ -33,7 +34,8 @@ public class NewsViewHolder extends RecyclerView.ViewHolder {
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(itemView.getContext(), NewsDetailsActivity.class);
+
+                Intent intent = new Intent(itemView.getContext(), getAdapterPosition()%2 == 0 ? VideoNewsDetailsActivity.class : NewsDetailsActivity.class);
                 intent.putExtra("title", news.get(getAdapterPosition()).getName());
                 intent.putExtra("description", news.get(getAdapterPosition()).getDescription());
                 intent.putExtra("image", news.get(getAdapterPosition()).getImageUrl());

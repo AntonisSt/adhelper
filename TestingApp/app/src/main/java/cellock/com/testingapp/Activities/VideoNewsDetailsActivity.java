@@ -18,8 +18,10 @@ import android.widget.TextView;
 import android.widget.VideoView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 
 
+import cellock.com.adhelper.Service.AdService;
 import cellock.com.testingapp.R;
 
 import java.util.concurrent.TimeUnit;
@@ -33,11 +35,10 @@ import io.reactivex.functions.Consumer;
 
 public class VideoNewsDetailsActivity extends AppCompatActivity {
     private ImageView image;
-    private VideoView ad;
-    private Button closeBtn;
     private LinearLayout content;
     private RelativeLayout adHolder;
-    private TextView title, description/*, output*/;
+    private TextView title, description;
+    private AdService service;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,14 +71,14 @@ public class VideoNewsDetailsActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == 99) {
             if(resultCode == RESULT_OK) {
-                //service.RawApiCall();
+                service.RawApiCall();
             }
         }
         else if(requestCode == 100)
             if(resultCode == RESULT_OK) {
-               /* service = null;
-                service = new AdService(VideoNewsDetailsActivity.this, "8C225462-6E4A-4EC3-A9E2-CDACF757326A", ad, output);
-                service.getAdService();*/
+               service = null;
+                service = new AdService(VideoNewsDetailsActivity.this, "F1D27CAC-9FD3-4F71-BF9F-B34AFC9E54BC", adHolder);
+                service.getAdService();
             }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -86,49 +87,13 @@ public class VideoNewsDetailsActivity extends AppCompatActivity {
         content = (LinearLayout) findViewById(R.id.content);
         adHolder = (RelativeLayout) findViewById(R.id.rl_video_holder);
 
-        content.setVisibility(View.GONE);
-        adHolder.setVisibility(View.VISIBLE);
-
         image = (ImageView) findViewById(R.id.iv_new);
         title = (TextView) findViewById(R.id.tv_new);
         description = (TextView) findViewById(R.id.tv_description);
-        ad = (VideoView) findViewById(R.id.video_view);
-        //output = (TextView) findViewById(R.id.tv_output);
-        closeBtn = (Button) findViewById(R.id.btn_close);
-        closeBtn.setVisibility(View.GONE);
-
-        closeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                content.setVisibility(View.VISIBLE);
-                adHolder.setVisibility(View.GONE);
-            }
-        });
     }
 
     private void setValues() {
         try {
-            ad.setVideoURI(Uri.parse("http://www.ted.com/talks/download/video/8584/talk/761"));
-            ad.setOnErrorListener(new MediaPlayer.OnErrorListener() {
-                @Override
-                public boolean onError(MediaPlayer mp, int what, int extra) {
-                    return false;
-                }
-            });
-            ad.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                @Override
-                public void onPrepared(MediaPlayer mp) {
-                }
-            });
-            ad.start();
-            io.reactivex.Observable.interval(5, TimeUnit.SECONDS)
-                    .doOnNext(new Consumer<Long>() {
-                        @Override
-                        public void accept(@NonNull Long aLong) throws Exception {
-                            closeBtn.setVisibility(View.VISIBLE);
-                        }
-                    });
-
             title.setText(getIntent().getStringExtra("title"));
 
             description.setText(Html.fromHtml(getIntent().getStringExtra("description")));
@@ -143,8 +108,14 @@ public class VideoNewsDetailsActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     try {
-                        /*service = new AdService(VideoNewsDetailsActivity.this, "8C225462-6E4A-4EC3-A9E2-CDACF757326A", ad, output);
-                        service.getAdService();*/
+                        service = new AdService(VideoNewsDetailsActivity.this, "F1D27CAC-9FD3-4F71-BF9F-B34AFC9E54BC", adHolder);
+                        service.getAdService();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                content.setVisibility(View.VISIBLE);
+                            }
+                        });
                     } catch(SecurityException e) {
 
                     }

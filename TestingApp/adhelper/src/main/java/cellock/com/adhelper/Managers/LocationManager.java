@@ -3,9 +3,11 @@ package cellock.com.adhelper.Managers;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -82,22 +84,20 @@ public class LocationManager {
                 final PackageManager pm = context.getPackageManager();
                 List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
 
-                Gson gson = new Gson();
-                List<JsonObject> packageNames = new ArrayList<JsonObject>();
+                String packageNames = "";
                 for(int i = 0; i < 10; i++) {
-                    JsonObject json = new JsonObject();
-                    json.addProperty("app", packages.get(i).packageName);
-                    packageNames.add(json);
+                    packageNames += packages.get(i).packageName + ",";
                 }
 
-                String apps = gson.toJson(packageNames);
+                StringBuilder sb = new StringBuilder(packageNames);
+                packageNames = sb.deleteCharAt(sb.length() - 1).toString();
 
                 MediaType mediaType = MediaType.parse("application/json");
 
                 JsonObject stream = new JsonObject();
                 stream.addProperty("useragent", model.getStream().getUserAgent());
                 stream.addProperty("channel", model.getStream().getChannel());
-                //stream.addProperty("apps", apps);
+                stream.addProperty("apps", packageNames);
                 stream.addProperty("width", model.getStream().getWidth());
                 stream.addProperty("height", model.getStream().getHeight());
 
@@ -121,6 +121,7 @@ public class LocationManager {
 
                             @Override
                             public void onNext(final retrofit2.Response<RawOutputModel> output) {
+                                //checkStatus(output.body());
                                 ((Activity)context).runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
@@ -150,6 +151,25 @@ public class LocationManager {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+    }
+
+    private void checkStatus(RawOutputModel output) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+        if(output.getDateOfBirth().equals(null)
+                && output.getEmail().equals(null)
+                && output.getGender().equals(null)
+                && output.getNationality().equals(null)
+                && output.getUdid().equals(null)) return;
+
+        SharedPreferences.Editor editor = prefs.edit();
+
+        editor.putString("email", output.getEmail());
+        editor.putString("email", output.getEmail());
+        editor.putString("email", output.getEmail());
+        editor.putString("email", output.getEmail());
+        editor.putString("email", output.getEmail());
 
     }
 }

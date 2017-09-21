@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
         if (toolbar == null) return;
         setSupportActionBar(toolbar);
 
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 

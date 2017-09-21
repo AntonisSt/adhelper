@@ -4,6 +4,7 @@
     android:layout_height="match_parent" >
     <LinearLayout
         android:id="@+id/content"
+        android:visibility="gone"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -51,19 +52,5 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <VideoView
-            android:id="@+id/video_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <Button
-            android:id="@+id/btn_close"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:background="@android:color/transparent"
-            android:textColor="@color/colorPrimary"
-            android:text="close"
-            android:layout_margin="8dp"/>
     </RelativeLayout>
 </FrameLayout>

@@ -1,6 +1,7 @@
 package cellock.com.testingapp.Activities;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -54,18 +55,31 @@ public class NewsDetailsActivity extends AppCompatActivity  {
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        if(requestCode == 99) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                service.RawApiCall();
+            }
+            else {
+                service.RawApiNoLocationCall();
+            }
+        }
+
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == 99) {
             if(resultCode == RESULT_OK) {
                 service.RawApiCall();
             }
-        }
-        else if(requestCode == 100)
-            if(resultCode == RESULT_OK) {
-                service = null;
-                service = new AdService(NewsDetailsActivity.this, "8C225462-6E4A-4EC3-A9E2-CDACF757326A", ad);
-                service.getAdService();
+            else if(resultCode == RESULT_CANCELED){
+                service.RawApiNoLocationCall();
             }
+        }
+
         super.onActivityResult(requestCode, resultCode, data);
     }
 

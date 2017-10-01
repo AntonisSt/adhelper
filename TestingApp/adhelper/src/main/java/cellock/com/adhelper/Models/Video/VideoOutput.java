@@ -51,20 +51,23 @@ public class VideoOutput extends AdOutput {
 
     private SimpleExoPlayerView videoView;
     private ProgressBar progressBar;
-    private Button closeBtn;
+    //private Button closeBtn;
 
     public VideoOutput(final RelativeLayout videoParent) {
         Looper.prepare();
         videoView = new SimpleExoPlayerView(videoParent.getContext());
+
         videoView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        videoView.setMinimumHeight(320);
         videoView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
+
 
         progressBar = new ProgressBar(videoParent.getContext());
         progressBar.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
         progressBar.setIndeterminate(true);
 
-        closeBtn = new Button(videoParent.getContext());
+        /*closeBtn = new Button(videoParent.getContext());
         closeBtn.setLayoutParams(new ViewGroup.LayoutParams(96, 96));
         closeBtn.setText("X");
         closeBtn.setGravity(Gravity.CENTER);
@@ -79,26 +82,28 @@ public class VideoOutput extends AdOutput {
         });
 
         closeBtn.setEnabled(false);
-        closeBtn.setVisibility(View.INVISIBLE);
+        closeBtn.setVisibility(View.INVISIBLE);*/
 
         ((Activity)(videoParent.getContext())).runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 videoParent.addView(videoView);
                 videoParent.addView(progressBar);
-                videoParent.addView(closeBtn);
+                //videoParent.addView(closeBtn);
+
+
 
                 RelativeLayout.LayoutParams layoutParams =
                         (RelativeLayout.LayoutParams)progressBar.getLayoutParams();
                 layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
                 progressBar.setLayoutParams(layoutParams);
 
-                RelativeLayout.LayoutParams layoutParamsBtn =
+                /*RelativeLayout.LayoutParams layoutParamsBtn =
                         (RelativeLayout.LayoutParams)closeBtn.getLayoutParams();
                 layoutParamsBtn.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
                 layoutParamsBtn.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
                 layoutParamsBtn.setMargins(16, 16, 16, 16);
-                closeBtn.setLayoutParams(layoutParamsBtn);
+                closeBtn.setLayoutParams(layoutParamsBtn);*/
             }
         });
 
@@ -140,12 +145,9 @@ public class VideoOutput extends AdOutput {
                 @Override
                 public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
                     switch(playbackState) {
-                        case ExoPlayer.STATE_ENDED:
-                            ((RelativeLayout)(videoView.getParent())).setVisibility(View.GONE);
-                            break;
                         case ExoPlayer.STATE_READY:
                             progressBar.setVisibility(View.GONE);
-                            Observable.interval(2, TimeUnit.SECONDS)
+                            /*Observable.interval(2, TimeUnit.SECONDS)
                                     .subscribeOn(Schedulers.newThread())
                                     .observeOn(AndroidSchedulers.mainThread())
                                     .subscribe(new Consumer<Long>() {
@@ -154,7 +156,7 @@ public class VideoOutput extends AdOutput {
                                             closeBtn.setVisibility(View.VISIBLE);
                                             closeBtn.setEnabled(true);
                                         }
-                                    });
+                                    });*/
                             break;
                     }
                 }

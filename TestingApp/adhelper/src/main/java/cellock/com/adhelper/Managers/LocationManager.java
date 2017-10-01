@@ -28,6 +28,7 @@ import java.util.List;
 import cellock.com.adhelper.Interfaces.ApiInterface;
 import cellock.com.adhelper.Models.RawModel.RawInputModel;
 import cellock.com.adhelper.Models.RawModel.RawOutputModel;
+import cellock.com.adhelper.Models.SuperClasses.LoadUsersInput;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.Single;
@@ -66,88 +67,92 @@ public class LocationManager {
         RxLocation rxLocation = new RxLocation(context);
 
         if ( ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
-
             ActivityCompat.requestPermissions((AppCompatActivity)context, new String[] {  android.Manifest.permission.ACCESS_COARSE_LOCATION  }, 99 );
             return;
         }
 
         try {
             FusedLocation location = rxLocation.location();
-            Location loco = location.lastLocation().blockingGet();
+            Observable loco = location.lastLocation().toObservable();
 
-            model.getStream().setLat(loco.getLatitude());
-            model.getStream().setLon(loco.getLongitude());
+            loco.subscribe(new Consumer() {
+                @Override
+                public void accept(@NonNull Object o) throws Exception {
+                    model.getStream().setLat(((Location)o).getLatitude());
+                    model.getStream().setLon(((Location)o).getLongitude());
 
-            try {
-                ApiInterface service = retroClient.create(ApiInterface.class);
+                    try {
+                        ApiInterface service = retroClient.create(ApiInterface.class);
 
-                final PackageManager pm = context.getPackageManager();
-                List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
+                        final PackageManager pm = context.getPackageManager();
+                        List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
 
-                String packageNames = "";
-                for(int i = 0; i < 10; i++) {
-                    packageNames += packages.get(i).packageName + ",";
+                        String packageNames = "";
+                        for(int i = 0; i < 10; i++) {
+                            packageNames += packages.get(i).packageName + ",";
+                        }
+
+                        StringBuilder sb = new StringBuilder(packageNames);
+                        packageNames = sb.deleteCharAt(sb.length() - 1).toString();
+
+                        MediaType mediaType = MediaType.parse("application/json");
+
+                        JsonObject stream = new JsonObject();
+                        stream.addProperty("useragent", model.getStream().getUserAgent());
+                        stream.addProperty("channel", model.getStream().getChannel());
+                        stream.addProperty("apps", packageNames);
+                        stream.addProperty("width", model.getStream().getWidth());
+                        stream.addProperty("height", model.getStream().getHeight());
+
+                        final JsonObject object = new JsonObject();
+                        object.addProperty("udid", model.getUdId());
+                        object.addProperty("uakey", model.getUaKey());
+                        object.addProperty("stream", stream.toString());
+                        object.addProperty("event", model.getEvent());
+
+                        final RequestBody body = RequestBody.create(mediaType, object.toString());
+
+                        final Observable<retrofit2.Response<RawOutputModel>> output = service.postRawService(body);
+
+                        output.subscribeOn(Schedulers.newThread())
+                                .observeOn(Schedulers.newThread())
+                                .subscribe(new Observer<retrofit2.Response<RawOutputModel>>() {
+                                    @Override
+                                    public void onSubscribe(Disposable d) {
+                                        d.isDisposed();
+                                    }
+
+                                    @Override
+                                    public void onNext(final retrofit2.Response<RawOutputModel> output) {
+                                        checkStatus(output.body());
+                                        ((Activity)context).runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                Toast.makeText(context, "Raw service completed successfully.", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                    }
+
+                                    @Override
+                                    public void onError(final Throwable e) {
+                                        ((Activity)context).runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                Toast.makeText(context, "Raw service failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                    }
+
+                                    @Override
+                                    public void onComplete() {
+                                        Log.d("raw service", "completed");
+                                    }
+                                });
+                    } catch(Exception e) {
+                        Log.d("error", e.getMessage());
+                    }
                 }
-
-                StringBuilder sb = new StringBuilder(packageNames);
-                packageNames = sb.deleteCharAt(sb.length() - 1).toString();
-
-                MediaType mediaType = MediaType.parse("application/json");
-
-                JsonObject stream = new JsonObject();
-                stream.addProperty("useragent", model.getStream().getUserAgent());
-                stream.addProperty("channel", model.getStream().getChannel());
-                stream.addProperty("apps", packageNames);
-                stream.addProperty("width", model.getStream().getWidth());
-                stream.addProperty("height", model.getStream().getHeight());
-
-                final JsonObject object = new JsonObject();
-                object.addProperty("udid", model.getUdId());
-                object.addProperty("uakey", model.getUaKey());
-                object.addProperty("stream", stream.toString());
-                object.addProperty("event", model.getEvent());
-
-                final RequestBody body = RequestBody.create(mediaType, object.toString());
-
-                final Observable<retrofit2.Response<RawOutputModel>> output = service.postRawService(body);
-
-                output.subscribeOn(Schedulers.newThread())
-                        .observeOn(Schedulers.newThread())
-                        .subscribe(new Observer<retrofit2.Response<RawOutputModel>>() {
-                            @Override
-                            public void onSubscribe(Disposable d) {
-                                d.isDisposed();
-                            }
-
-                            @Override
-                            public void onNext(final retrofit2.Response<RawOutputModel> output) {
-                                //checkStatus(output.body());
-                                ((Activity)context).runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Toast.makeText(context, "Raw service completed successfully.", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                            }
-
-                            @Override
-                            public void onError(final Throwable e) {
-                                ((Activity)context).runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Toast.makeText(context, "Raw service failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                            }
-
-                            @Override
-                            public void onComplete() {
-                                Log.d("raw service", "completed");
-                            }
-                        });
-            } catch(Exception e) {
-                Log.d("error", e.getMessage());
-            }
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -157,19 +162,50 @@ public class LocationManager {
     private void checkStatus(RawOutputModel output) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
-        if(output.getDateOfBirth().equals(null)
-                && output.getEmail().equals(null)
-                && output.getGender().equals(null)
-                && output.getNationality().equals(null)
-                && output.getUdid().equals(null)) return;
+        boolean serverEmpty = (output.getDateOfBirth() == null
+                && output.getEmail() == null
+                && output.getGender() == null
+                && output.getNationality() == null
+                && output.getUdid() == null);
+
+        boolean clientEmpty = (!prefs.contains("email")
+                && !prefs.contains("birth")
+                && !prefs.contains("gender")
+                && !prefs.contains("nationality")
+                && !prefs.contains("udid"));
+
+        if(clientEmpty && serverEmpty) return;
+
+
+        String email = checkStringDifferences(output.getEmail(), prefs.getString("email", ""));
+        String birth = checkStringDifferences(output.getDateOfBirth(), prefs.getString("birth", ""));
+        String nationality = checkStringDifferences(output.getNationality(), prefs.getString("nationality", ""));
+        String gender = checkStringDifferences(output.getGender(), prefs.getString("gender", ""));
+        String udid = checkStringDifferences(output.getUdid(), prefs.getString("udid", ""));
+
 
         SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("email", email);
+        editor.putString("birth", birth);
+        editor.putString("nationality", nationality);
+        editor.putString("gender", gender);
+        editor.putString("udid", udid);
 
-        editor.putString("email", output.getEmail());
-        editor.putString("email", output.getEmail());
-        editor.putString("email", output.getEmail());
-        editor.putString("email", output.getEmail());
-        editor.putString("email", output.getEmail());
+        LoadUsersInput input = new LoadUsersInput();
 
+        input.setEmail(email);
+        input.setGender(gender);
+        input.setBirth(birth);
+        input.setNationality(nationality);
+        input.setUdid(udid);
+
+        ApiInterface service = retroClient.create(ApiInterface.class);
+
+        service.postUsersService(input);
+
+    }
+
+    private String checkStringDifferences(String clientString, String serverString) {
+        return (serverString == null) ?  clientString : serverString;
     }
 }

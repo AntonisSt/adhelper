@@ -1,6 +1,7 @@
 package cellock.com.testingapp.Activities;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -68,18 +69,30 @@ public class VideoNewsDetailsActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        if(requestCode == 99) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                service.RawApiCall();
+            }
+            else {
+                service.RawApiNoLocationCall();
+            }
+        }
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == 99) {
             if(resultCode == RESULT_OK) {
                 service.RawApiCall();
             }
-        }
-        else if(requestCode == 100)
-            if(resultCode == RESULT_OK) {
-               service = null;
-                service = new AdService(VideoNewsDetailsActivity.this, "F1D27CAC-9FD3-4F71-BF9F-B34AFC9E54BC", adHolder);
-                service.getAdService();
+            else if(resultCode == RESULT_CANCELED){
+                service.RawApiNoLocationCall();
             }
+        }
+
         super.onActivityResult(requestCode, resultCode, data);
     }
 

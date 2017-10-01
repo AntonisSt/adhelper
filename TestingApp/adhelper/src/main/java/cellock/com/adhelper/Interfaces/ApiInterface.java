@@ -4,6 +4,7 @@ import cellock.com.adhelper.Models.RawModel.RawInputModel;
 import cellock.com.adhelper.Models.RawModel.RawOutputModel;
 import cellock.com.adhelper.Models.SuperClasses.AdInput;
 import cellock.com.adhelper.Models.SuperClasses.AdOutput;
+import cellock.com.adhelper.Models.SuperClasses.LoadUsersInput;
 import io.reactivex.Observable;
 import okhttp3.RequestBody;
 import retrofit2.Response;
@@ -31,4 +32,11 @@ public interface ApiInterface {
 
     @POST("raw")
     Observable<Response<RawOutputModel>> postRawService(@Body RequestBody input);
+
+    @Headers({
+            "Content-Type: application/json",
+            "ads-api-key: 16CDF36F65767"
+    })
+    @POST("LoadUsers")
+    Observable<Response> postUsersService(@Body LoadUsersInput input);
 }

@@ -43,14 +43,16 @@
                     android:padding="16dp"
                     android:textColor="@android:color/black"
                     />
+                <RelativeLayout
+                    android:id="@+id/rl_video_holder"
+                    android:layout_width="match_parent"
+                    android:padding="16dp"
+                    android:layout_height="wrap_content">
+
+                </RelativeLayout>
             </LinearLayout>
         </ScrollView>
 
     </LinearLayout>
-    <RelativeLayout
-        android:id="@+id/rl_video_holder"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
-    </RelativeLayout>
 </FrameLayout>
